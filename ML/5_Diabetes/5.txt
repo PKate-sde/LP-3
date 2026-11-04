@@ -1,0 +1,88 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+
+-----------
+
+df = pd.read_csv('diabetes.csv')
+
+print(df.head())
+print(df.shape)
+print(df.info())
+print(df.isnull().sum())
+
+-----------
+
+X = df.drop('Outcome', axis=1)
+y = df['Outcome']
+
+print(X.head())
+print(y.head())
+
+----------
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Normalize the data
+sc = StandardScaler()
+
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+----------
+
+knn = KNeighborsClassifier(n_neighbors=5)
+
+# Train the model
+knn.fit(X_train, y_train)
+
+# Predict the output
+y_pred = knn.predict(X_test)
+
+print("Predicted values:")
+print(y_pred)
+
+----------
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("Confusion Matrix:")
+print(cm)
+
+# Display individual values
+TN, FP, FN, TP = cm.ravel()
+
+print("True Negative:", TN)
+print("False Positive:", FP)
+print("False Negative:", FN)
+print("True Positive:", TP)
+
+# Calculate evaluation metrics
+accuracy = accuracy_score(y_test, y_pred)
+error_rate = 1 - accuracy
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+
+print("Accuracy:", accuracy)
+print("Error Rate:", error_rate)
+print("Precision:", precision)
+print("Recall:", recall)
+
+----------
+
+plt.imshow(cm, cmap='Blues')
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.colorbar()
+
+plt.xticks([0, 1])
+plt.yticks([0, 1])
+
+plt.show()
