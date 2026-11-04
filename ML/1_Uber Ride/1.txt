@@ -1,0 +1,143 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score, mean_squared_error
+
+------------
+
+df = pd.read_csv('uber.csv')
+
+print(df.head())
+print(df.info())
+print(df.isnull().sum())
+print(df.describe())
+
+--------------
+
+# Remove unnecessary columns
+df.drop(['Unnamed: 0', 'key'], axis=1, inplace=True)
+
+# Remove missing values
+df.dropna(inplace=True)
+
+# Convert date into datetime format
+df['pickup_datetime'] = pd.to_datetime(
+    df['pickup_datetime'], utc=True
+)
+
+# Extract pickup hour
+df['hour'] = df['pickup_datetime'].dt.hour
+
+# Remove datetime column
+df.drop('pickup_datetime', axis=1, inplace=True)
+
+# Remove invalid fare and passenger values
+df = df[df['fare_amount'] > 0]
+df = df[df['passenger_count'].between(1, 6)]
+
+# Remove invalid geographical coordinates
+df = df[
+    df['pickup_latitude'].between(40.5, 41.0) &
+    df['dropoff_latitude'].between(40.5, 41.0) &
+    df['pickup_longitude'].between(-74.3, -73.5) &
+    df['dropoff_longitude'].between(-74.3, -73.5)
+]
+
+print(df.head())
+print("Dataset shape:", df.shape)
+
+-------------
+
+Q1 = df['fare_amount'].quantile(0.25)
+Q3 = df['fare_amount'].quantile(0.75)
+
+IQR = Q3 - Q1
+
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+
+df = df[
+    (df['fare_amount'] >= lower) &
+    (df['fare_amount'] <= upper)
+]
+
+# Display boxplot
+sns.boxplot(x=df['fare_amount'])
+plt.title("Fare Amount Outliers")
+plt.show()
+
+-------------
+
+correlation = df.corr()
+
+# Display correlation heatmap
+sns.heatmap(correlation, annot=True, cmap='coolwarm')
+plt.title("Correlation Heatmap")
+plt.show()
+
+# Display correlation with fare amount
+print("Correlation with Fare:")
+print(correlation['fare_amount'].sort_values(ascending=False))
+
+------------
+
+X = df.drop('fare_amount', axis=1)
+y = df['fare_amount']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+------------
+
+lr = LinearRegression()
+
+# Train the model
+lr.fit(X_train, y_train)
+
+# Predict fare
+y_pred1 = lr.predict(X_test)
+
+# Evaluate model
+print("Linear Regression R2:", r2_score(y_test, y_pred1))
+
+print("Linear Regression RMSE:",
+      np.sqrt(mean_squared_error(y_test, y_pred1)))
+
+-----------
+
+rf = RandomForestRegressor(
+    n_estimators=10,
+    random_state=42
+)
+
+# Train the model
+rf.fit(X_train, y_train)
+
+# Predict fare
+y_pred2 = rf.predict(X_test)
+
+# Evaluate model
+print("Random Forest R2:", r2_score(y_test, y_pred2))
+
+print("Random Forest RMSE:",
+      np.sqrt(mean_squared_error(y_test, y_pred2)))
+
+------------
+
+print("Linear Regression R2:",
+      r2_score(y_test, y_pred1))
+
+print("Random Forest R2:",
+      r2_score(y_test, y_pred2))
+
+print("Linear Regression RMSE:",
+      np.sqrt(mean_squared_error(y_test, y_pred1)))
+
+print("Random Forest RMSE:",
+      np.sqrt(mean_squared_error(y_test, y_pred2)))
