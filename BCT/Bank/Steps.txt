@@ -1,0 +1,260 @@
+# Bank Account Smart Contract Using Solidity and Ethereum Sepolia Test Network
+
+## 1. Aim
+
+To write and deploy a smart contract on the Ethereum test network that performs basic banking operations such as depositing money, withdrawing money, and showing the account balance.
+
+## 2. Objectives
+
+1. To understand the basics of Solidity programming.
+2. To create a Bank Account smart contract.
+3. To deploy the contract using Remix IDE.
+4. To connect MetaMask with the Ethereum Sepolia test network.
+5. To perform deposit and withdrawal transactions.
+6. To check the account balance using a smart contract function.
+
+## 3. Software and Tools Required
+
+- Remix IDE
+- MetaMask Wallet
+- Ethereum Sepolia Test Network
+- Sepolia test ETH
+- Google Chrome browser
+
+## 4. Theory
+
+A smart contract is a computer program stored and executed on a blockchain. It automatically performs operations when a user calls its functions.
+
+Solidity is a programming language used to develop smart contracts on the Ethereum blockchain.
+
+In this project, we create a simple Bank smart contract that provides three main operations:
+
+- **Deposit:** Allows users to deposit ETH into the smart contract.
+- **Withdraw:** Allows users to withdraw ETH from the smart contract.
+- **Show Balance:** Displays the current balance stored in the contract.
+
+The contract is deployed on the Ethereum Sepolia test network. Sepolia is a test network used by developers and students to test smart contracts without using real ETH.
+
+## 5. Solidity Program
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract Bank {
+
+    uint256 private balance;
+
+    // Deposit money
+    function deposit() public payable {
+        balance += msg.value;
+    }
+
+    // Withdraw money
+    function withdraw(uint256 amount) public {
+        require(amount <= balance, "Insufficient balance");
+
+        balance -= amount;
+        payable(msg.sender).transfer(amount);
+    }
+
+    // Display balance
+    function showBalance() public view returns (uint256) {
+        return balance;
+    }
+}
+```
+
+## 6. Explanation of the Program
+
+**1. `pragma solidity ^0.8.20;`**
+
+Specifies the Solidity compiler version.
+
+**2. `contract Bank`**
+
+Creates a smart contract named Bank.
+
+**3. `uint256 private balance;`**
+
+Declares a variable to store the contract's balance in wei.
+
+**4. `deposit()`**
+
+- The `payable` keyword allows the function to receive ETH.
+- `msg.value` represents the amount of ETH sent with the transaction.
+- The deposited amount is added to the balance.
+
+**5. `withdraw(uint256 amount)`**
+
+- Allows the user to withdraw a specified amount.
+- `require()` checks whether sufficient balance is available.
+- If sufficient balance exists, the amount is deducted.
+- `transfer()` sends the ETH to the user's wallet.
+
+**6. `showBalance()`**
+
+Displays the current balance of the smart contract without modifying blockchain data.
+
+**Note:** Ethereum uses wei as its smallest currency unit.
+
+1 ETH = 1,000,000,000,000,000,000 wei.
+
+## 7. Sepolia ETH Faucet URLs
+
+A cryptocurrency faucet is a website that provides free test ETH for blockchain development and testing.
+
+The following websites provide access to Sepolia test ETH:
+
+| Faucet | URL |
+|---|---|
+| Sepolia PoW Faucet | https://sepolia-faucet.pk910.de/ |
+| QuickNode Faucet | https://faucet.quicknode.com/ethereum/sepolia |
+| Alchemy Faucet | https://www.alchemy.com/faucets/ethereum-sepolia |
+| Google Cloud Faucet | https://cloud.google.com/application/web3/faucet/ethereum/sepolia |
+| Infura Faucet | https://www.infura.io/faucet/sepolia |
+
+**Important notes:**
+
+- The Sepolia PoW Faucet uses browser-based proof-of-work to earn test ETH.
+- Some faucets require account registration, verification, or an existing Ethereum mainnet balance.
+- Faucet availability and eligibility requirements can change.
+- Use your public MetaMask wallet address to request test ETH.
+- Never share your private key or Secret Recovery Phrase.
+
+The Ethereum developer documentation also provides a directory of Sepolia faucets:
+
+https://ethereum.org/developers/docs/networks/
+
+## 8. Implementation Steps
+
+### Step 1: Open Remix IDE
+
+1. Open https://remix.ethereum.org/
+2. Create a new Solidity file.
+3. Name the file `Bank.sol`.
+4. Copy and paste the Solidity program into the file.
+
+### Step 2: Compile the Program
+
+1. Open the Solidity Compiler tab.
+2. Select compiler version 0.8.20 or a compatible version.
+3. Click **Compile Bank.sol**.
+4. Check that the program compiles successfully.
+
+### Step 3: Install and Configure MetaMask
+
+1. Install MetaMask from https://metamask.io/
+2. Create a wallet.
+3. Enable test networks in MetaMask settings.
+4. Select the Sepolia network.
+5. Copy the public wallet address.
+
+Never share your wallet's private key or Secret Recovery Phrase.
+
+### Step 4: Obtain Free Sepolia ETH
+
+1. Open a Sepolia test ETH faucet from Section 7.
+2. Enter your MetaMask public wallet address.
+3. Complete the required verification.
+4. Request free Sepolia ETH.
+5. Wait for the ETH to arrive in your wallet.
+6. Check your balance in MetaMask.
+
+A faucet provides test ETH for development and testing purposes. It has no real monetary value.
+
+### Step 5: Deploy the Smart Contract
+
+1. Return to Remix IDE.
+2. Open the **Deploy & Run Transactions** tab.
+3. Select **Browser Extension** under Environment.
+4. Connect MetaMask.
+5. Ensure the selected network is Sepolia.
+6. Select the Bank contract.
+7. Keep the deployment Value at `0 wei`.
+8. Click **Deploy**.
+9. Confirm the transaction in MetaMask.
+10. After successful deployment, the contract appears under Deployed Contracts.
+
+### Step 6: Deposit ETH
+
+1. Expand the deployed Bank contract.
+2. Find the Value field above the contract functions.
+3. Select `wei` as the unit.
+4. Enter `100000000000000`.
+5. Click the `deposit()` button.
+6. Confirm the transaction in MetaMask.
+7. Wait for the transaction to complete.
+
+The deposited amount is 0.0001 ETH.
+
+### Step 7: Check the Balance
+
+1. Find the `showBalance()` function.
+2. Click the button.
+3. The balance should be displayed as:
+
+`100000000000000 wei`
+
+This is equal to 0.0001 ETH.
+
+### Step 8: Withdraw ETH
+
+1. Find the `withdraw()` function.
+2. Enter `40000000000000` in its input field.
+3. Keep the Value field at `0 wei`.
+4. Click the `withdraw()` button.
+5. Confirm the transaction in MetaMask.
+6. Wait for the transaction to complete.
+
+The withdrawn amount is 0.00004 ETH.
+
+### Step 9: Check the Remaining Balance
+
+1. Click `showBalance()` again.
+2. The remaining balance should be:
+
+`60000000000000 wei`
+
+This is equal to 0.00006 ETH.
+
+## 9. Experimental Results
+
+The following table shows the expected results of the transactions performed.
+
+| Operation | Amount |
+|---|---:|
+| Initial balance | 0 ETH |
+| Deposited amount | 0.0001 ETH |
+| Balance after deposit | 0.0001 ETH |
+| Withdrawn amount | 0.00004 ETH |
+| Final balance | 0.00006 ETH |
+
+**Note:** Gas fees are paid separately from the wallet balance and are not included in the contract balance shown above.
+
+## 10. Important Observations
+
+1. The smart contract was successfully compiled using Remix IDE.
+2. The contract was deployed on the Ethereum Sepolia test network.
+3. MetaMask was used to connect the wallet and approve transactions.
+4. The deposit operation successfully added ETH to the contract.
+5. The withdrawal operation transferred ETH back to the user's wallet.
+6. The showBalance function displayed the updated contract balance.
+7. Each transaction required a network gas fee.
+
+## 11. Conclusion
+
+In this experiment, we successfully developed and deployed a Bank Account smart contract using Solidity on the Ethereum Sepolia test network.
+
+We implemented three important banking operations: depositing ETH, withdrawing ETH, and checking the account balance. We also learned how to use Remix IDE and MetaMask to deploy and interact with smart contracts.
+
+Thus, the experiment helped us understand the practical implementation of smart contracts and basic blockchain transactions.
+
+## 12. Contract Details
+
+- **Contract Name:** Bank
+- **Programming Language:** Solidity
+- **IDE:** Remix IDE
+- **Blockchain Network:** Ethereum Sepolia
+- **Contract Address:** `0xbb6486AaB14Ee9A3B1966e4ebEE292C7FC98E5d84`
+- **Block Explorer:** https://sepolia.etherscan.io/address/0xbb6486AaB14Ee9A3B1966e4ebEE292C7FC98E5d84
