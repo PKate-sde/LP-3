@@ -1,0 +1,42 @@
+import matplotlib.pyplot as plt
+
+-----------
+
+def function(x):
+    return (x + 3)**2
+
+def derivative(x):
+    return 2 * (x + 3)
+
+-----------
+
+x = 2
+learning_rate = 0.1
+iterations = 20
+
+x_values = []
+
+for i in range(iterations):
+    x_values.append(x)
+
+    x = x - learning_rate * derivative(x)
+
+    print("Iteration:", i+1, "X:", x, "Y:", function(x))
+
+print("Minimum value of x:", x)
+print("Minimum value of y:", function(x))
+
+print("Derivative at minimum:", derivative(x))
+
+--------------
+
+x = range(-6, 4)
+
+y = [function(i) for i in x]
+
+plt.plot(x, y)
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.title("Gradient Descent")
+plt.grid()
+plt.show()
