@@ -1,0 +1,404 @@
+# Experiment: Student Data Smart Contract Using Solidity
+
+## 1. Aim
+
+To write and deploy a Solidity smart contract to create and manage student data using Structures, Arrays and Fallback functions on the Ethereum Sepolia test network, and observe the transaction fees and gas values.
+
+## 2. Objectives
+
+1. To understand the concept of structures in Solidity.
+2. To use arrays to store multiple student records.
+3. To implement and understand the fallback function.
+4. To implement the receive function for accepting ETH.
+5. To deploy the smart contract on the Ethereum Sepolia test network.
+6. To observe gas consumption and transaction fees.
+
+## 3. Software and Tools Required
+
+- Remix IDE
+- MetaMask Wallet
+- Ethereum Sepolia Test Network
+- Solidity Compiler (version 0.8.20)
+- Google Chrome Browser
+- Sepolia Etherscan
+
+## 4. Theory
+
+A smart contract is a computer program stored on a blockchain. It executes automatically when a user interacts with it.
+
+Solidity is a programming language used to create smart contracts on the Ethereum blockchain.
+
+In this experiment, we create a Student Data smart contract to store and manage student information.
+
+The contract uses the following Solidity constructs:
+
+### A. Structures (struct)
+
+A structure is used to group different types of information into a single record.
+
+In this program, the Student structure stores:
+- Student ID
+- Student Name
+- Student Age
+- Student Course
+
+### B. Arrays
+
+An array is used to store multiple student records in one variable.
+
+In this experiment, a dynamic array stores the details of multiple students.
+
+### C. Fallback Function
+
+A fallback function is a special function that executes when a call does not match any existing function in the smart contract, or when unmatched data is sent to the contract.
+
+It is declared using the `fallback()` keyword.
+
+### D. Receive Function
+
+The receive function is a special payable function that executes when ETH is sent directly to a contract without any additional data.
+
+It is declared using the `receive()` keyword.
+
+### E. Gas and Transaction Fee
+
+Gas is the unit used to measure the computational work required to execute operations on Ethereum.
+
+The transaction fee is calculated using:
+
+**Transaction Fee = Gas Used × Effective Gas Price**
+
+## 5. Solidity Program
+
+File name: `StudentData.sol`
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract StudentData {
+
+    // Structure to store student information
+    struct Student {
+        uint id;
+        string name;
+        uint age;
+        string course;
+    }
+
+    // Array to store multiple students
+    Student[] public students;
+
+    // Variables for fallback testing
+    uint public fallbackCalls;
+    uint public fallbackBalance;
+
+    // Function to add student details
+    function addStudent(
+        uint _id,
+        string memory _name,
+        uint _age,
+        string memory _course
+    ) public {
+        students.push(Student(_id, _name, _age, _course));
+    }
+
+    // Function to get student details using index
+    function getStudent(uint _index)
+        public
+        view
+        returns (uint, string memory, uint, string memory)
+    {
+        require(_index < students.length, "Student does not exist");
+
+        Student memory s = students[_index];
+
+        return (s.id, s.name, s.age, s.course);
+    }
+
+    // Function to get total number of students
+    function getStudentCount() public view returns (uint) {
+        return students.length;
+    }
+
+    // Receive ETH directly
+    receive() external payable {
+        fallbackBalance += msg.value;
+    }
+
+    // Fallback function
+    fallback() external payable {
+        fallbackCalls++;
+        fallbackBalance += msg.value;
+    }
+}
+```
+
+## 6. Explanation of the Program
+
+**1. `pragma solidity ^0.8.20;`**
+
+Specifies the Solidity compiler version.
+
+**2. `contract StudentData`**
+
+Creates a smart contract named StudentData.
+
+**3. `struct Student`**
+
+Defines a structure containing student ID, name, age and course.
+
+**4. `Student[] public students`**
+
+Creates a dynamic array to store student records.
+
+**5. `addStudent()`**
+
+Adds new student information to the array using the `push()` function.
+
+**6. `getStudent()`**
+
+Displays student details using the array index. Indexing starts from zero.
+
+**7. `getStudentCount()`**
+
+Returns the total number of students stored in the array.
+
+**8. `receive()`**
+
+Accepts ETH sent directly to the contract without transaction data and updates the fallback balance.
+
+**9. `fallback()`**
+
+Handles unmatched function calls and updates the fallback call counter and balance.
+
+## 7. Implementation Steps
+
+### Step 1: Open Remix IDE
+
+1. Open https://remix.ethereum.org/
+2. Open the File Explorer.
+3. Create a new file named `StudentData.sol`.
+4. Paste the Solidity program into the file.
+
+### Step 2: Compile the Program
+
+1. Open the Solidity Compiler tab.
+2. Select compiler version 0.8.20.
+3. Click Compile StudentData.sol.
+4. Check that the program compiles successfully.
+
+### Step 3: Configure MetaMask
+
+1. Install MetaMask from https://metamask.io/
+2. Create a wallet.
+3. Enable test networks.
+4. Select Ethereum Sepolia.
+5. Obtain free Sepolia ETH using a faucet.
+6. Check that the test ETH is available in your wallet.
+
+### Step 4: Deploy the Smart Contract
+
+1. Open Deploy & Run Transactions in Remix.
+2. Select Browser Extension as the environment.
+3. Connect MetaMask.
+4. Ensure that the selected network is Sepolia.
+5. Select StudentData from the contract dropdown.
+6. Keep the Value field at 0 wei.
+7. Click Deploy.
+8. Confirm the transaction in MetaMask.
+9. Wait for successful deployment.
+
+The deployed contract will appear under Deployed Contracts.
+
+### Step 5: Add Student Records
+
+Call the `addStudent()` function with the following details.
+
+**First Student:**
+
+| Field | Value |
+|---|---|
+| ID | 1 |
+| Name | Rahul |
+| Age | 20 |
+| Course | Computer Science |
+
+Click `addStudent()` and confirm the transaction.
+
+**Second Student:**
+
+| Field | Value |
+|---|---|
+| ID | 2 |
+| Name | Amit |
+| Age | 21 |
+| Course | Information Technology |
+
+Click `addStudent()` again and confirm the transaction.
+
+### Step 6: Verify Student Records
+
+1. Call `getStudent()` with index `0`.
+2. The details of Rahul should be displayed.
+3. Call `getStudent()` with index `1`.
+4. The details of Amit should be displayed.
+5. Call `getStudentCount()`.
+
+Expected output:
+
+```text
+2
+```
+
+### Step 7: Test the Receive Function
+
+1. Set the Value field to `1000000000000`.
+2. Select `wei`.
+3. Copy your deployed StudentData contract address.
+4. Open MetaMask and send `0.000001 ETH` directly to the contract address.
+5. Leave the transaction data empty.
+6. Confirm the transaction.
+
+Check the following functions:
+
+- `fallbackCalls()` should return `0`.
+- `fallbackBalance()` should return `1000000000000`.
+
+This confirms that the receive function executed successfully.
+
+### Step 8: Test the Fallback Function
+
+To trigger the actual fallback function, send a transaction containing non-empty, unmatched data.
+
+1. Open Remix's low-level interaction feature.
+2. Enter the deployed contract address.
+3. Enter the calldata:
+
+```text
+0x12345678
+```
+
+4. Set the Value field to `2000000000000 wei`.
+5. Click Transact.
+6. Confirm the transaction in MetaMask.
+
+This triggers the fallback function because the supplied data does not match any existing function.
+
+### Step 9: Verify Fallback Results
+
+Click the following buttons:
+
+| Function | Expected Output |
+|---|---:|
+| `fallbackCalls()` | 1 |
+| `fallbackBalance()` | 3000000000000 |
+
+The total balance is calculated as:
+
+- Receive transaction = 1000000000000 wei
+- Fallback transaction = 2000000000000 wei
+- Total = 3000000000000 wei
+
+## 8. Observing Gas Values and Transaction Fees
+
+Gas values and transaction fees can be checked using **Sepolia Etherscan**.
+
+Website:
+
+https://sepolia.etherscan.io/
+
+### Steps to Check Gas Values
+
+1. Open Sepolia Etherscan.
+2. Copy your deployed StudentData contract address from Remix.
+3. Paste the contract address into the Etherscan search bar.
+4. Open the contract page.
+5. Find the Transactions section.
+6. Click the transaction you want to examine.
+7. Check the transaction details.
+
+The following information can be observed:
+
+| Parameter | Description |
+|---|---|
+| Gas Limit | Maximum gas allowed for the transaction |
+| Gas Used | Actual gas consumed by the transaction |
+| Gas Price | Price paid per unit of gas |
+| Transaction Fee | Total fee paid for the transaction |
+
+**Formula:**
+
+Transaction Fee = Gas Used × Effective Gas Price
+
+### Transactions to Observe
+
+- Contract deployment
+- First student addition
+- Second student addition
+- Receive ETH transaction
+- Fallback transaction
+
+Record the actual gas values and transaction fees displayed by Etherscan.
+
+## 9. Experimental Results
+
+The following table shows the expected results of the experiment.
+
+| Operation | Expected Result |
+|---|---|
+| Add first student | Rahul's details stored |
+| Add second student | Amit's details stored |
+| Get first student | Rahul's details displayed |
+| Get second student | Amit's details displayed |
+| Get student count | 2 |
+| Receive function | Successfully executed |
+| Fallback function | Successfully executed |
+| Fallback calls | 1 |
+| Fallback balance | 3000000000000 wei |
+
+## 10. Gas Observation Table
+
+Fill this table using the actual values from your Sepolia Etherscan transactions.
+
+| Transaction | Gas Used | Transaction Fee |
+|---|---|---|
+| Contract deployment | ______ | ______ |
+| Add first student | ______ | ______ |
+| Add second student | ______ | ______ |
+| Receive ETH | ______ | ______ |
+| Fallback transaction | ______ | ______ |
+
+Note: Gas values depend on the actual transaction and network conditions. Do not use estimated values in the final observation table.
+
+## 11. Important Observations
+
+1. The StudentData smart contract was successfully compiled using Remix IDE.
+2. The contract was deployed on the Ethereum Sepolia test network.
+3. Structures were used to group student information.
+4. Arrays were used to store multiple student records.
+5. The addStudent function successfully added student details.
+6. The getStudent function displayed the stored information.
+7. The receive function successfully accepted direct ETH transfers.
+8. The fallback function successfully handled unmatched calls.
+9. Gas consumption and transaction fees were observed using Sepolia Etherscan.
+
+## 12. Conclusion
+
+In this experiment, we successfully developed and deployed a Student Data smart contract using Solidity on the Ethereum Sepolia test network.
+
+We implemented structures to store student information, arrays to maintain multiple student records, and fallback and receive functions to handle ETH transactions and unmatched calls.
+
+We also tested the smart contract using Remix IDE and MetaMask and observed the gas consumption and transaction fees using Sepolia Etherscan.
+
+Thus, this experiment helped us understand the practical implementation of structures, arrays, fallback functions and gas measurement in Solidity smart contracts.
+
+## 13. Contract Details
+
+- **Contract Name:** StudentData
+- **Programming Language:** Solidity
+- **Compiler Version:** 0.8.20
+- **IDE:** Remix IDE
+- **Blockchain Network:** Ethereum Sepolia
+- **Contract Address:** Add your deployed StudentData contract address here.
+- **Gas Explorer:** https://sepolia.etherscan.io/
